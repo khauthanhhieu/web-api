@@ -2,7 +2,13 @@ const express = require('express')
 const app = express()
 
 // Service
-const userService = require('./services/userService')
+const userService = require('./services/user')
+
+// Router
+const userRouter = require('./routes/user')
+
+// user Router
+app.use('/user', userRouter)
 
 app.get('/', function (req, res) {
   res.send('Welcome to Grocery Service APIs.')
