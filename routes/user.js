@@ -1,10 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const UserService = require('../services/user')
+const AuthService = require('../services/auth')
 
-router.get('/', function (req, res, next) {
-    let userServiceObj = new UserService(req, res)
-    userServiceObj.getUser()
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
+
+router.post('/login', function (req, res, next) {
+    console.log("POST '/user/login'")
+    let authServiceObj = new AuthService(req, res)
+    authServiceObj.login();
+    
 });
 
 router.get('/profile', function (req, res, next) {
