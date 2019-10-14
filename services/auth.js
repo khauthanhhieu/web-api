@@ -1,5 +1,6 @@
 const UserService = require('./user')
 const passport = require('passport')
+const jwt = require('jsonwebtoken');
 
 class AuthService {
     constructor(req, res) {
@@ -12,8 +13,7 @@ class AuthService {
         passport.authenticate('local', { session: false }, (err, user, info) => {
             if (err || !user) {
                 return this.res.status(400).json({
-                    message: 'Something is not right',
-                    user: user
+                    message: 'Something is not right'
                 })
             }
             this.req.login(user, {session : false}, (err) => {
@@ -22,9 +22,10 @@ class AuthService {
             })
 
             const token = jwt.sign(user, 'doctor');
-            return this.res.json({user, token})
+            return this.res.json({ token })
         })(this.req, this.res)
     }
+
 }
 
 module.exports = AuthService;

@@ -6,8 +6,11 @@ class UserService {
         let seft = this
         return seft.res.status(200).json({ 'a': 'b' })
     }
-    login() {
-    
+
+    insert(user, db, callback) {
+        db.collection('users').insertOne(user, function () {
+            callback
+        })
     }
     register() {
         let self = this;
@@ -33,17 +36,19 @@ class UserService {
     }
 
     static async findOne(username, password) {
-        let seft = this;
         try {
-            MongoClient.connect(url, function (err, db) {
-                if (err)
-                    console.log(err)
-                db.collection('users').findOne({ username: username, password: password }, function (err, result) {
+            return new Promise((resolve, reject) => {
+                MongoClient.connect(url, function (err, db) {
                     if (err)
                         console.log(err)
-                    return result;
-                })
-            });
+                    db.collection('users').findOne({ username: username, password: password }, function (err, result) {
+                        if (err)
+                            console.log(err)
+                        resolve(result);
+                    })
+                });
+            })
+            
         }
         catch (error) {
             return null;
