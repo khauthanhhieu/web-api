@@ -2,6 +2,10 @@ const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017/websdk';
 
 class UserService {
+    constructor(req, res) {
+        this.req = req;
+        this.res = res;
+    }
     getUser() {
         let seft = this
         return seft.res.status(200).json({ 'a': 'b' })
@@ -14,16 +18,21 @@ class UserService {
     }
     register() {
         let self = this;
-        let userItem = this.req.body.userItem;
-    
+        var user = this.req.body
         try {
             MongoClient.connect(url, function (err, db) {
-                assert.equal(null, err);
-                self.insert(userItem, db, function () {
+                if (err)
+                    console.log(err)
+
+                self.insert(user, db, function () {
+                    if (err)
+                        console.log(err)
                     db.close()
-                    return self.res.status(200).json({
-                        status: 0
-                    })
+
+                })
+
+                self.res.status(200).json({
+                    status: 200
                 })
             });
         }
@@ -48,7 +57,7 @@ class UserService {
                     })
                 });
             })
-            
+
         }
         catch (error) {
             return null;
@@ -60,7 +69,7 @@ class UserService {
         try {
             MongoClient.connect(url, function (err, db) {
                 assert.equal(null, err);
-                db.collection('users').findOne({ _id : id }, function (err, result) {
+                db.collection('users').findOne({ _id: id }, function (err, result) {
                     assert.equal(err, null);
                     return result;
                 })
