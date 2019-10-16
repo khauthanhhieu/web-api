@@ -16,14 +16,28 @@ class AuthService {
                     message: 'Something is not right'
                 })
             }
-            this.req.login(user, {session : false}, (err) => {
+            this.req.login(user, { session: false }, (err) => {
                 if (err)
                     this.res.send(err)
             })
-
             const token = jwt.sign(user, 'doctor');
             return this.res.json({ token })
         })(this.req, this.res)
+    }
+
+    getMe() {
+        let self = this
+        jwt.verify(this.req.headers['token'], 'doctor', function (err, data) {
+            if (err) {
+                return self.res.status(403).json({
+                    message: err
+                })
+            }
+            return self.res.json({
+                message: 'Successful',
+                data
+            })
+        });
     }
 
 }

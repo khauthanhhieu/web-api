@@ -28,7 +28,6 @@ class UserService {
                     if (err)
                         console.log(err)
                     db.close()
-
                 })
 
                 self.res.status(200).json({

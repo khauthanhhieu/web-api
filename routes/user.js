@@ -20,8 +20,4 @@ router.post('/register', function(req, res) {
     
 })
 
-router.get('/profile', function (req, res, next) {
-    res.send(req.user);
-});
-
 module.exports = router;
