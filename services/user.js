@@ -6,40 +6,25 @@ class UserService {
         this.req = req;
         this.res = res;
     }
-    getUser() {
-        let seft = this
-        return seft.res.status(200).json({ 'a': 'b' })
-    }
 
-    insert(user, db, callback) {
-        db.collection('users').insertOne(user, function () {
-            callback
-        })
-    }
-    register() {
-        let self = this;
-        var user = this.req.body
+    async register() {
+        const db = await MongoClient.connect(url);
         try {
-            MongoClient.connect(url, function (err, db) {
-                if (err)
-                    console.log(err)
-
-                self.insert(user, db, function () {
-                    if (err)
-                        console.log(err)
-                    db.close()
-                })
-
-                self.res.status(200).json({
-                    status: 200
-                })
-            });
-        }
-        catch (error) {
-            return self.res.status(500).json({
-                status: 1,
+            const userCollection = db.collection("users")
+            const user = this.req.body;
+            const result = await userCollection.findOne({username: user.username})
+            if (result != null) {
+                this.res.status(200).json({mess: "Tên người dùng đã tồn tại"})
+            } else {
+                await userCollection.insert(this.req.body)
+                this.res.status(200).json({status:200});
+            }
+        } catch(error) {
+            this.res.status(500).json({
                 error: error
             })
+        } finally {
+            db.close()
         }
     }
 

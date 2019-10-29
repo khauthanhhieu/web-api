@@ -10,12 +10,13 @@ passport.use(new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password'
 }, function (username, password, cb) {
+    console.log(username, password)
     return UserService.findOne(username, password)
         .then(user => {
             if (!user) {
-                return cb(null, false, { message: 'Incorrect email or password.' })
+               return cb(null, false, { isSuccess: false })
             }
-            return cb(null, user, { message: 'Logged In Successfully' })
+            return cb(null, user, { isSuccess: true })
         })
         .catch(err => cb(err))
 }))

@@ -9,17 +9,20 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended : false}))
 
+var cookieParser = require('cookie-parser');
+app.use(cookieParser())
+
 // Router
 const userRouter = require('./routes/user')
 
 // user Router
-app.use('/user', userRouter);
+app.use('/api/user', userRouter);
 
-app.get('/', function (req, res) {
+app.get('/api/', function (req, res) {
   res.send('Welcome to Grocery Service APIs.')
 })
 
-app.get('/me', function(req, res) {
+app.get('/api/me', function(req, res) {
   console.log("GET '/me'")
   let authService = new AuthService(req, res)
   authService.getMe()

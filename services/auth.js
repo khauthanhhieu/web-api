@@ -12,16 +12,17 @@ class AuthService {
     login() {
         passport.authenticate('local', { session: false }, (err, user, info) => {
             if (err || !user) {
-                return this.res.status(400).json({
-                    message: 'Something is not right'
-                })
+                return this.res.json({ isSuccess: false })
             }
             this.req.login(user, { session: false }, (err) => {
                 if (err)
                     this.res.send(err)
             })
-            const token = jwt.sign(user, 'doctor');
-            return this.res.json({ token })
+            const token = jwt.sign(user, 'doctor', { expiresIn: '2h' });
+            this.res.cookie('access_token', token, {
+                maxAge: 2 * 60 * 60 * 100,
+            })
+            return this.res.json({ isSuccess: true, token })
         })(this.req, this.res)
     }
 

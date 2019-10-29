@@ -17,7 +17,6 @@ router.post('/register', function(req, res) {
     console.log("POST '/user/register'")
     let userServiceObj = new UserService(req, res)
     userServiceObj.register();
-    
 })
 
 module.exports = router;
