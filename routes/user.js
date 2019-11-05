@@ -19,4 +19,16 @@ router.post('/register', function(req, res) {
     userServiceObj.register();
 })
 
+router.post('/edit', function(req, res) {
+    console.log("POST '/user/edit'")
+    let userServiceObj = new UserService(req, res)
+    userServiceObj.edit();
+})
+
+router.post('/check', function(req, res) {
+    console.log("POST 'user/check'")
+    let userServiceObj = new UserService(req, res)
+    userServiceObj.checkUsername();
+})
+
 module.exports = router;

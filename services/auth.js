@@ -18,7 +18,7 @@ class AuthService {
                 if (err)
                     this.res.send(err)
             })
-            const token = jwt.sign(user, 'doctor', { expiresIn: '2h' });
+            const token = jwt.sign({ user_id: user._id }, 'doctor', { expiresIn: '2h' });
             this.res.cookie('access_token', token, {
                 maxAge: 2 * 60 * 60 * 100,
             })
@@ -26,21 +26,23 @@ class AuthService {
         })(this.req, this.res)
     }
 
-    getMe() {
-        let self = this
-        jwt.verify(this.req.headers['token'], 'doctor', function (err, data) {
-            if (err) {
-                return self.res.status(403).json({
-                    message: err
-                })
-            }
-            return self.res.json({
-                message: 'Successful',
-                data
+    async getMe() {
+        try {
+            const verify = jwt.verify(this.req.headers['token'], 'doctor')
+            console.log(verify)
+            const user = await UserService.findOneById(verify.user_id)
+            console.log(user)
+            this.res.json({
+                isSuccess: true,
+                user: user,
             })
-        });
+        } catch(err) {
+            this.res.json(403).json({
+                isSuccess: false,
+                mess: err,
+            })
+        }
     }
-
 }
 
 module.exports = AuthService;
